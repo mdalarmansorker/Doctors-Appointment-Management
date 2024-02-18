@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,11 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-        'name' => 'Admin', 
-        'email' =>  'admin@gmail.com', 
-        'password' => Hash::make('admin123'),
-        'email_verified_at' => now(),
+        Role::create(['name' => 'admin']);
+        $user = User::create([
+            'name' => 'Admin',
+            'email' => 'arman.sorker@rebingdev.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('adminadmin')
         ]);
+        $user->assignRole('admin');
     }
 }
