@@ -10,51 +10,60 @@
             </ul>
             <p class="list-disc text-red-400" v-if="typeof errors === 'string'">{{errors}}</p>
             <form method="post" @submit.prevent="handleLogin">
-            <div class="mb-4">
-                <label
-                    class="block text-grey-darker text-sm font-bold mb-2"
-                    for="username"
-                >
-                    Email Address
-                </label>
-                <input
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-                    id="username"
-                    type="text"
-                    v-model="form.email"
-                    required
-                />
-            </div>
-            <div class="mb-4">
-                <label
-                    class="block text-grey-darker text-sm font-bold mb-2"
-                    for="password"
-                >
-                    Password
-                </label>
-                <input
-                    class="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3"
-                    id="password"
-                    type="password"
-                    v-model="form.password"
-                    required
-                />
-                <!-- <p class="text-red text-xs italic">Please choose a password.</p> -->
-            </div>
-            <div class="flex items-center justify-between">
-                <button
-                    class="bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded"
-                    type="submit"
-                >
-                    Sign In
-                </button>
-                <!-- <router-link
-                    class="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker"
-                    to="register"
-                >
-                    Sign Up
-                </router-link> -->
-            </div>
+                <div class="mb-4">
+                    <label
+                        class="block text-grey-darker text-sm font-bold mb-2"
+                        for="username"
+                    >
+                        Email Address
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+                        id="username"
+                        type="text"
+                        v-model="form.email"
+                        required
+                    />
+                </div>
+                <div class="mb-4">
+                    <label
+                        class="block text-grey-darker text-sm font-bold mb-2"
+                        for="password"
+                    >
+                        Password
+                    </label>
+                    <input
+                        class="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3"
+                        id="password"
+                        type="password"
+                        v-model="form.password"
+                        required
+                    />
+                    <!-- <p class="text-red text-xs italic">Please choose a password.</p> -->
+                </div>
+                <div class="flex items-center justify-between">
+                    <button
+                        class="bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded"
+                        type="submit"
+                    >
+                        Sign In
+                    </button>
+                    <!-- <router-link
+                        class="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker"
+                        to="register"
+                    >
+                        Sign Up
+                    </router-link> -->
+                </div>
+
+                <a-space wrap>
+                    <a-button type="primary">Primary Button</a-button>
+                    <a-button>Default Button</a-button>
+                    <a-button type="dashed">Dashed Button</a-button>
+                    <a-button type="text">Text Button</a-button>
+                    <a-button type="link">Link Button</a-button>
+                </a-space>
+
             </form>
         </div>
     </div>
@@ -62,6 +71,7 @@
 
 <script>
 import { reactive, ref } from 'vue';
+import { Button } from 'ant-design-vue';
 import axios from 'axios';
 import {useRouter} from "vue-router";
 export default {

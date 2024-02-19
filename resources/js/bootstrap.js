@@ -32,7 +32,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
-// import 'ant-design-vue/dist/antd.css';
+import 'ant-design-vue/dist/reset.css';
 import Antd from 'ant-design-vue';
 
 import {createApp} from 'vue'
@@ -41,5 +41,6 @@ import App from './App.vue'
 import router from './route'
 
 const app = createApp(App)
+app.use(Antd);
 app.use(router)
 app.mount("#app")

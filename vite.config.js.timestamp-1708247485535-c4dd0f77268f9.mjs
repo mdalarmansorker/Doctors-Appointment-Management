@@ -1,7 +1,7 @@
 // vite.config.js
-import { defineConfig } from "file:///C:/laragon/www/Doctors-Appointment-Management/node_modules/vite/dist/node/index.js";
-import laravel from "file:///C:/laragon/www/Doctors-Appointment-Management/node_modules/laravel-vite-plugin/dist/index.js";
-import vue from "file:///C:/laragon/www/Doctors-Appointment-Management/node_modules/@vitejs/plugin-vue/dist/index.mjs";
+import { defineConfig } from "/node_modules/vite/dist/node/index.js";
+import laravel from "node_modules/laravel-vite-plugin/dist/index.js";
+import vue from "node_modules/@vitejs/plugin-vue/dist/index.mjs";
 var vite_config_default = defineConfig({
   plugins: [
     vue(),
