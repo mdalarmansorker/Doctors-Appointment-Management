@@ -32,6 +32,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
+// import 'ant-design-vue/dist/antd.css';
+import Antd from 'ant-design-vue';
+
 import {createApp} from 'vue'
 
 import App from './App.vue'

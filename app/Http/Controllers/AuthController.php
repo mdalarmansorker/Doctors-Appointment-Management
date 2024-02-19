@@ -8,6 +8,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
+
 
 class AuthController extends Controller
 {
@@ -76,8 +80,9 @@ class AuthController extends Controller
             }
 
             $user = User::where('email', $request->email)->first();
-
+            $userRoleNames = $user->getRoleNames();
             return response()->json([
+                'roles' => $userRoleNames,
                 'user' => $user,
                 'status' => true,
                 'message' => 'Logged In Successfully',

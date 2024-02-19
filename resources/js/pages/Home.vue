@@ -6,6 +6,12 @@
                 class="btn btn-error"
                 @click="handleLogout">Logout</button></span>
         </div>
+        <template v-if="userRole === 'admin'">
+            <AdminNav/>
+        </template>
+        <template v-else>
+
+        </template>
     </div>
 </template>
 <script>
@@ -13,10 +19,11 @@ import {ref, onMounted} from 'vue'
 import {useRouter} from "vue-router";
 import {request} from '../helper'
 import Loader from '../components/Loader.vue';
-
+import AdminNav from '../components/navigation/AdminNav.vue';
 export default {
     components: {
         Loader,
+        AdminNav,
     },
     setup() {
         const user = ref()
@@ -26,7 +33,11 @@ export default {
         onMounted(() => {
             authentication()
         });
-
+        const userID = localStorage.getItem('UserID');
+        const userName = localStorage.getItem('UserName');
+        const userEmail = localStorage.getItem('UserEmail');
+        const userRole = localStorage.getItem('UserRole');
+        // console.log(userID, userName, userEmail, userRole);
         const authentication = async () => {
             isLoading.value = true
             try {
@@ -36,8 +47,7 @@ export default {
                 await router.push('/')
             }
         }
-        const userName = localStorage.getItem('UserName');
-        const userEmail = localStorage.getItem('UserEmail');
+        
         const handleLogout = () => {
             localStorage.removeItem('APP_DEMO_USER_TOKEN')
             localStorage.removeItem('User')
@@ -47,6 +57,7 @@ export default {
             user,
             userName, 
             userEmail,
+            userRole,
             handleLogout,
         }
     },

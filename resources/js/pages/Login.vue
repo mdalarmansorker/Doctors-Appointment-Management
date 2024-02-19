@@ -81,6 +81,7 @@ export default {
                     localStorage.setItem('UserName', result.data.user.name)
                     localStorage.setItem("UserID", result.data.user.id)
                     localStorage.setItem('UserEmail', result.data.user.email)
+                    localStorage.setItem('UserRole', result.data.roles)
                     await router.push('home')
                 }
             } catch (e) {
