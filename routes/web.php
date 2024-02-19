@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+Route::get('/{vue_capture?}', function() {
+    return view('welcome');
+})->where('vue_capture', '[\/\w\.-]*');
+
+Route::post('login', [AuthController::class, 'store']);
+Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('admin')->group(function(){
+    Route::get('/home', [IndexController::class, 'index'])->name('index');
 });
