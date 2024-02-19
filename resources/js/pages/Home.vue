@@ -7,7 +7,14 @@
                 @click="handleLogout">Logout</button></span>
         </div>
         <template v-if="userRole === 'admin'">
-            <AdminNav/>
+            <div class="flex">
+                <AdminNav  @menu-item-clicked="handleMenuItemClicked"/>
+                <div v-if="adminNavState.selectedKey === '1'">
+                    <AdminHome/>
+                </div>
+            </div>
+            
+            
         </template>
         <template v-else>
 
@@ -15,15 +22,17 @@
     </div>
 </template>
 <script>
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, reactive} from 'vue'
 import {useRouter} from "vue-router";
 import {request} from '../helper'
 import Loader from '../components/Loader.vue';
-import AdminNav from '../components/navigation/AdminNav.vue';
+import AdminNav from '../components/admin/AdminNav.vue';
+import AdminHome from '../components/admin/AdminHome.vue';
 export default {
     components: {
         Loader,
         AdminNav,
+        AdminHome,
     },
     setup() {
         const user = ref()
@@ -53,7 +62,16 @@ export default {
             localStorage.removeItem('User')
             router.push('/')
         }
+        // Create a reactive state to hold the selected key from AdminNav
+        const adminNavState = reactive({
+            selectedKey: null,
+        });
+        const handleMenuItemClicked = (key) => {
+            adminNavState.selectedKey = key;
+        };
         return {
+            adminNavState,
+            handleMenuItemClicked,
             user,
             userName, 
             userEmail,
@@ -61,5 +79,6 @@ export default {
             handleLogout,
         }
     },
+    
 }
 </script>
