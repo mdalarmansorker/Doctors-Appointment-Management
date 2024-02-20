@@ -1,10 +1,10 @@
 <template>
-    <div class="mx-auto w-4/12 mt-10 bg-blue-200 p-4 rounded-lg">
+    <div class="w-full mt-1 p-4 rounded-lg">
         <!-- component -->
         <div
             class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-2 flex flex-col"
         >
-            <h1 class="text-gray-600 py-5 font-bold text-3xl"> Create Account </h1>
+            <h1 class="text-gray-600 py-5 font-bold text-3xl"> Create New User </h1>
             <ul class="list-disc text-red-400" v-for="(value, index) in errors" :key="index">
                 <li>{{value[0]}}</li>
             </ul>
@@ -66,7 +66,6 @@
                     class="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker"
                     to="/"
                 >
-                    Login
                 </router-link>
             </div>
             </form>
