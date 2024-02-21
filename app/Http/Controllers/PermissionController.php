@@ -23,4 +23,9 @@ class PermissionController extends Controller
             return response()->json(['message' => 'Failed to store permission', 'error' => $e->getMessage()], 500);
         }
     }
+    public function destroy(Permission $permission)
+    {
+        $permission->delete();
+        return response()->json(['message' => 'Permission deleted successfully']);
+    }
 }
