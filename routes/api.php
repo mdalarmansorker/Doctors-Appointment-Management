@@ -20,8 +20,8 @@ use App\Http\Controllers\PermissionController;
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/users/{userId}/roles-permissions', [RoleController::class, 'getUserRolesAndPermissions']);
-Route::get('/roles', [RoleController::class, 'index'])->name('roles');
-Route::post('/roles', [RoleController::class, 'store'])->name('roles');
+Route::get('/roles', [RoleController::class, 'index']);
+Route::post('/roles', [RoleController::class, 'store']);
 Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions');
 Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions');
 

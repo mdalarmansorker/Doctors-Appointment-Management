@@ -36,7 +36,8 @@
     </div>
     <div class="items-center">
       <template v-if="selectedTemplate === 'Home'">
-        <AdminHome />
+        <!-- <AdminHome /> -->
+        <RolesTesting />
       </template>
       <template v-else-if="selectedTemplate === 'User Registration'">
         <Register />
@@ -63,6 +64,8 @@ import AdminHome from './AdminHome.vue';
 import Register from './Register.vue';
 import Roles from './Roles.vue';
 import Permissions from './Permissions.vue';
+import RolesTesting from './RolesTesting.vue';
+
 export default defineComponent({
   components: {
     HomeOutlined,
@@ -72,6 +75,7 @@ export default defineComponent({
     Register,
     Roles,
     Permissions,
+    RolesTesting,
   },
   setup() {
     const state = reactive({

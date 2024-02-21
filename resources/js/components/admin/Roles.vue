@@ -2,12 +2,12 @@
     <div>
         <a-button  @click="showModal">Create Role</a-button>
         <a-modal v-model:visible="visible" title="Create Role" @ok="handleOk" :ok-button-props="{ type: 'default' }">
-        <form @submit.prevent="submitForm">
+        <form method="post" @submit="submitForm">
             <div class="form-control">
             <label class="label">
                 <span class="label-text text-black">Role Name</span>
             </label>
-            <input v-model="name" type="text" placeholder="Role Name" class="input input-bordered bg-slate-100 border-blue-500 text-black" required />
+            <input id="name" v-model="form.name" type="text" placeholder="Role Name" class="input input-bordered bg-slate-100 border-blue-500 text-black" required />
             </div>
             <div class="form-control mt-6">
                 <button type="submit" class="btn btn-primary">Create</button>
@@ -45,7 +45,7 @@
   export default defineComponent({
     setup() {
         const data = ref([]);
-
+        const errors = ref();
         const fetchData = async () => {
         try {
             const response = await axios.get('/api/roles');
@@ -88,8 +88,10 @@
                 console.log('Role created:', response.data);
                 visible.value = false; // Hide the modal after successful creation
                 fetchData(); // Fetch updated data to refresh the table
-            } catch (error) {
-                console.error('Error creating role:', error);
+            } catch (e) {
+                if(e.response.data && e.response.data.errors) {
+                    errors.value = Object.values(e.response.data.errors)
+                }
             }
         };
         const showDeleteConfirm = () => {
@@ -116,6 +118,8 @@
         visible,
         showModal,
         handleOk,
+        form,
+        errors,
         submitForm,
         };
     },
