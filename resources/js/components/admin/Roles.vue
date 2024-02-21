@@ -27,7 +27,7 @@
         <template #default="{ text, record, index }">
           <span class="flex gap-2">
             <a-button @click="handleEdit(record)">Edit</a-button>
-            <a-button danger @click="showDeleteConfirm">Delete</a-button>
+            <a-button danger @click="showDeleteConfirm(record)">Delete</a-button>
           </span>
         </template>
       </a-table-column>
@@ -63,10 +63,7 @@
         onMounted(() => {
             fetchData(); 
         });
-        const handleDelete = (record) => {
-        // Handle delete logic here
-        console.log('Delete role:', record);
-        };
+        
         const visible = ref<boolean>(false);
 
         const showModal = () => {
@@ -93,21 +90,31 @@
                 }
             }
         };
-        const showDeleteConfirm = () => {
-        Modal.confirm({
-            title: 'Are you sure delete this role?',
-            icon: createVNode(ExclamationCircleOutlined),
-            content: 'Some descriptions',
-            okText: 'Yes',
-            okType: 'danger',
-            cancelText: 'No',
-            onOk() {
-                console.log('OK');
-            },
-            onCancel() {
-                console.log('Cancel');
-            },
-            });
+        const showDeleteConfirm = (record) => {
+            Modal.confirm({
+                title: 'Are you sure delete this role?',
+                icon: createVNode(ExclamationCircleOutlined),
+                content: 'This action cannot be undone!',
+                okText: 'Yes',
+                okType: 'danger',
+                cancelText: 'No',
+                onOk() {
+                    console.log('OK');
+                    handleDelete(record);
+                },
+                onCancel() {
+                    console.log('Cancel');
+                },
+                });
+        };
+        const handleDelete = async (record) => {
+            try {
+                await axios.delete(`/api/roles/${record.id}`);
+                fetchData(); // Fetch updated data to refresh the table
+                console.log('Role deleted successfully');
+            } catch (error) {
+                console.error('Error deleting role:', error);
+            }
         };
         return {
         data,

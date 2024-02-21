@@ -22,6 +22,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/users/{userId}/roles-permissions', [RoleController::class, 'getUserRolesAndPermissions']);
 Route::get('/roles', [RoleController::class, 'index']);
 Route::post('/roles', [RoleController::class, 'store']);
+Route::delete('/roles/{role}', [RoleController::class, 'destroy']);
 Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions');
 Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions');
 

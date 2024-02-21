@@ -40,5 +40,10 @@ class RoleController extends Controller
             return response()->json(['message' => 'Failed to store role', 'error' => $e->getMessage()], 500);
         }
     }
+    public function destroy(Role $role)
+    {
+        $role->delete();
+        return response()->json(['message' => 'Role deleted successfully']);
+    }
 
 }
