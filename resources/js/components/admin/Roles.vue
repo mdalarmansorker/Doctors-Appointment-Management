@@ -25,9 +25,8 @@
       <a-table-column key="name" title="Role Name" data-index="name" />
       <a-table-column key="action" title="Action">
         <template #default="{ text, record, index }">
-          <span>
-            <a @click="handleEdit(record)">Edit</a>
-            <a-divider type="vertical" />
+          <span class="flex gap-2">
+            <a-button @click="handleEdit(record)">Edit</a-button>
             <a-button danger @click="showDeleteConfirm">Delete</a-button>
           </span>
         </template>

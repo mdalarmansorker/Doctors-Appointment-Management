@@ -2,12 +2,12 @@
     <div>
         <a-button  @click="showModal">Create Permission</a-button>
         <a-modal v-model:visible="visible" title="Create Permission" @ok="handleOk" :ok-button-props="{ type: 'default' }">
-        <form @submit.prevent="submitForm">
+            <form method="post" @submit="submitForm">
             <div class="form-control">
             <label class="label">
                 <span class="label-text text-black">Permission Name</span>
             </label>
-            <input v-model="name" type="text" placeholder="Permission Name" class="input input-bordered bg-slate-100 border-blue-500 text-black" required />
+            <input id="name" v-model="form.name" type="text" placeholder="Permission Name" class="input input-bordered bg-slate-100 border-blue-500 text-black" required />
             </div>
             <div class="form-control mt-6">
                 <button type="submit" class="btn btn-primary">Create</button>
@@ -25,11 +25,10 @@
       <a-table-column key="name" title="Permission Name" data-index="name" />
       <a-table-column key="action" title="Action">
         <template #default="{ text, record, index }">
-          <span>
-            <a @click="handleEdit(record)">Edit</a>
-            <a-divider type="vertical" />
+        <span class="flex gap-2">
+            <a-button @click="handleEdit(record)">Edit</a-button>
             <a-button danger @click="showDeleteConfirm">Delete</a-button>
-          </span>
+        </span>
         </template>
       </a-table-column>
     </a-table>
@@ -81,6 +80,7 @@
         const form = reactive({
             name: '',
         })
+        const errors = ref();
         const submitForm = async (evt) => {
             evt.preventDefault()
             try {
@@ -88,8 +88,10 @@
                 console.log('Permission created:', response.data);
                 visible.value = false; // Hide the modal after successful creation
                 fetchData(); // Fetch updated data to refresh the table
-            } catch (error) {
-                console.error('Error creating Permission:', error);
+            } catch (e) {
+                if(e.response.data && e.response.data.errors) {
+                    errors.value = Object.values(e.response.data.errors)
+                }
             }
         };
         const showDeleteConfirm = () => {
@@ -116,6 +118,8 @@
         visible,
         showModal,
         handleOk,
+        form,
+        errors,
         submitForm,
         };
     },
