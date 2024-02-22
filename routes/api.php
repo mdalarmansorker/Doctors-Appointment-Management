@@ -23,6 +23,8 @@ Route::get('/users/{userId}/roles-permissions', [RoleController::class, 'getUser
 Route::get('/roles', [RoleController::class, 'index']);
 Route::post('/roles', [RoleController::class, 'store']);
 Route::delete('/roles/{role}', [RoleController::class, 'destroy']);
+Route::put('/roles/{role}', [RoleController::class, 'update']);
+
 Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions');
 Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions');
 Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy']);

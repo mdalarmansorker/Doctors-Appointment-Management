@@ -7,10 +7,10 @@ const router = createRouter({
             path: '/',
             component: () => import('./pages/Login.vue')
         },
-        {
-            path: '/register',
-            component: () => import('./pages/Register.vue')
-        },
+        // {
+        //     path: '/register',
+        //     component: () => import('./pages/Register.vue')
+        // },
         {
             path: '/home',
             component: () => import('./pages/Home.vue')
