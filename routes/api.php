@@ -16,10 +16,11 @@ use App\Http\Controllers\PermissionController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+Route::get('/users', [AuthController::class, 'index']);
+Route::put('/users/{userID}', [AuthController::class, 'update']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
-Route::get('/users/{userId}/roles-permissions', [RoleController::class, 'getUserRolesAndPermissions']);
+// Route::get('/users/{userId}/roles-permissions', [RoleController::class, 'getUserRolesAndPermissions']);
 Route::get('/roles', [RoleController::class, 'index']);
 Route::post('/roles', [RoleController::class, 'store']);
 Route::delete('/roles/{role}', [RoleController::class, 'destroy']);
@@ -27,6 +28,7 @@ Route::put('/roles/{role}', [RoleController::class, 'update']);
 
 Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions');
 Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions');
+Route::put('/permissions/{permission}', [PermissionController::class, 'update']);
 Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->group(function () {

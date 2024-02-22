@@ -22,13 +22,13 @@
         </a-menu-item>
         <a-menu-item key="3">
           <template #icon>
-            <CalendarOutlined />
+            <UserOutlined />
           </template>
           Roles
         </a-menu-item>
         <a-menu-item key="4">
           <template #icon>
-            <CalendarOutlined />
+            <TagOutlined />
           </template>
           Permissions
         </a-menu-item>
@@ -40,7 +40,7 @@
         <RolesTesting />
       </template>
       <template v-else-if="selectedTemplate === 'User Registration'">
-        <Register />
+        <Users />
       </template>
       <template v-else-if="selectedTemplate === 'Create Roles'">
         <Roles />
@@ -58,10 +58,12 @@ import {
   HomeOutlined,
   UsergroupAddOutlined,
   CalendarOutlined,
+  UserOutlined,
+  TagOutlined,
 } from '@ant-design/icons-vue';
 import type { MenuProps } from 'ant-design-vue';
 import AdminHome from './AdminHome.vue';
-import Register from './Register.vue';
+import Users from './Users.vue';
 import Roles from './Roles.vue';
 import Permissions from './Permissions.vue';
 import RolesTesting from './RolesTesting.vue';
@@ -71,8 +73,10 @@ export default defineComponent({
     HomeOutlined,
     UsergroupAddOutlined,
     CalendarOutlined,
+    UserOutlined,
+    TagOutlined,
     AdminHome,
-    Register,
+    Users,
     Roles,
     Permissions,
     RolesTesting,

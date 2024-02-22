@@ -15,7 +15,15 @@ use Spatie\Permission\Models\Permission;
 
 class AuthController extends Controller
 {
-    public function register(Request $request): \Illuminate\Http\JsonResponse
+    public function index()
+    {
+        // Fetch users with their roles
+        $users = User::with('roles:id,name')->select('id', 'name', 'email')->get();
+        
+        return response()->json($users);
+    }
+
+    public function register(Request $request)
     {
         try {
             //Validated
@@ -39,7 +47,7 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password)
             ], 201);
-
+            $user->assignRole($request->role);
             return response()->json([
                 'status' => true,
                 'message' => 'User Created Successfully',
@@ -96,4 +104,54 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    public function update(Request $request)
+{
+    try {
+        // Validation
+        $validateUser = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required',
+        ]);
+
+        if($validateUser->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validateUser->errors()
+            ], 401);
+        }
+
+        // Check if the user exists for update, otherwise create a new user
+        $user = User::where('id', $request->id)->first();
+        if (!$user) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password)
+            ]);
+        } else {
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+        }
+
+        // Assign the role
+        $user->syncRoles([$request->role]);
+
+        return response()->json([
+            'status' => true,
+            'message' => $user->wasRecentlyCreated ? 'User Created Successfully' : 'User Updated Successfully',
+            'token' => $user->createToken("API_TOKEN")->plainTextToken
+        ], 200);
+
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => false,
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+
 }

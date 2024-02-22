@@ -23,6 +23,14 @@ class PermissionController extends Controller
             return response()->json(['message' => 'Failed to store permission', 'error' => $e->getMessage()], 500);
         }
     }
+    public function update(Request $request, Permission $permission)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'min:3'],
+        ]);
+        $permission->update($validated);
+        return response()->json(['message' => 'Permission updated successfully'], 201);
+    }
     public function destroy(Permission $permission)
     {
         $permission->delete();
