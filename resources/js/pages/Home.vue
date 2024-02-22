@@ -9,8 +9,8 @@
         <template v-if="userRole === 'admin'">
             <AdminNav  />
         </template>
-        <template v-else>
-
+        <template v-else-if="userRole === 'Support'">
+            <SupportNav />
         </template>
     </div>
 </template>
@@ -20,11 +20,14 @@ import {useRouter} from "vue-router";
 import {request} from '../helper'
 import Loader from '../components/Loader.vue';
 import AdminNav from '../components/admin/AdminNav.vue';
+import SupportNav from '../components/support/SupportNav.vue';
+
 
 export default {
     components: {
         Loader,
         AdminNav,
+        SupportNav,
     },
     setup() {
         const user = ref()
@@ -59,6 +62,7 @@ export default {
         return {
             // Key,
             user,
+            userID,
             userName, 
             userEmail,
             userRole,

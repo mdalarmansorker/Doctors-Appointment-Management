@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\AppointmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,8 @@ Route::post('/permissions', [PermissionController::class, 'store'])->name('permi
 Route::put('/permissions/{permission}', [PermissionController::class, 'update']);
 Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy']);
 
+Route::post('/appointment', [AppointmentController::class, 'store']);
+Route::get('/doctors', [AuthController::class, 'doctors']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
