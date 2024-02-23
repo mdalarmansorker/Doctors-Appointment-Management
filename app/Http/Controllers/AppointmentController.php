@@ -28,7 +28,7 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = Validator::make($request->all(), [
+        $validated = $request->validate([
             'name' => 'required',
             'email' => 'required|email',
             'phone' => 'required',
@@ -36,22 +36,49 @@ class AppointmentController extends Controller
             'age' => 'required|integer',
             'problem' => 'required',
             'date' => 'required|date',
-            'time' => 'required|time',
+            'time' => 'required',
             'doctorID' => 'required|integer',
-            'supportID' => 'required|integer',
-
+            'supportID' => 'required',
         ]);
-        $validated->status = 'pending';
-        $appointment = Appointment::create($validated->all());
-        return response()->json(['message'=>'Appointment Created Successfully!'], $appointment);
+        
+        // Add additional fields to the validated data
+        $validated['supportID'] = intval($request->supportID);
+        $validated['status'] = 'pending';
+    
+        // Create the appointment
+        $appointment = Appointment::create($validated);
+    
+        // Return a success response with status code 201
+        return response()->json(['message' => 'Appointment Created Successfully!'], 201);
     }
+    // public function store(Request $request)
+    // {
+    //     // Extract data from the request
+    //     $data = $request->all();
+
+    //     // Add additional fields to the data
+    //     $data['status'] = 'pending';
+
+    //     // // Create the appointment
+    //     $appointment = Appointment::create($data);
+
+    //     // Return a success response with status code 201
+    //     return response()->json(['message' => 'Appointment Created Successfully!', 'data' => $data], 201);
+    // }
+
 
     /**
      * Display the specified resource.
      */
-    public function show(Appointment $appointment)
+    // public function show()
+    // {
+    //     $appointments = Appointment::all();
+    //     return response()->json($appointments);
+    // }
+    public function show()
     {
-        //
+        $appointments = Appointment::with(['doctor', 'support'])->get();
+        return response()->json($appointments);
     }
 
     /**

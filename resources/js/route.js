@@ -25,6 +25,9 @@ router.beforeEach((to, from, next) => {
     if (to.path !== '/' && to.path !== '/register' && !isAuthenticated()) {
         return next({path: '/'})
     }
+    else if(to.path === '/' && isAuthenticated()){
+        return next({path: '/home'})
+    }
     return next()
 })
 

@@ -3,7 +3,7 @@
         <a-button type="primary" class="bg-blue-500" @click="showModal">Create Appointment</a-button>
         <a-modal v-model:visible="visible" title="Create Appointment" @ok="handleOk" :ok-button-props="{ type: 'default' }">
             <form method="post" @submit="submitForm">
-                <input type="hidden" v-model="form.supportID" value="{{ userID }}">
+                <input id="supportID" type="hidden" v-model="form.supportID">
                 <div class="form-control">
                     <label class="label">
                         <span class="label-text text-black">Name</span>
@@ -83,7 +83,10 @@
             </template>
         </template>
     </a-table>
-  </template>
+    <!-- Appointment list -->
+    <h2 class="font-extrabold mt-4 text-2xl text-center">Appointment List</h2>
+
+</template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, reactive, createVNode } from 'vue';
@@ -109,7 +112,7 @@ setup() {
     const editMode = ref<boolean>(false);
     const editAppointmentId = ref<number | null>(null); 
     const form = reactive({
-        supportID: '',
+        supportID: userID,
         doctorID: '',
         name: '',
         email: '',
@@ -121,6 +124,7 @@ setup() {
         time: ''
     });
     const submitForm = async (evt) => {
+        console.log(form);
             evt.preventDefault();
             try {
                 const url = editMode.value ? `/api/appointment/${editAppointmentId.value}` : '/api/appointment';
@@ -160,7 +164,6 @@ setup() {
         fetchDoctor();
     });
     return {
-    userID,
     visible,
     showModal,
     handleOk,
@@ -169,7 +172,7 @@ setup() {
     form,
     submitForm, 
     editMode,
-    
+
     };
 },
 });

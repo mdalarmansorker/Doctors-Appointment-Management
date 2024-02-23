@@ -21,6 +21,7 @@ class Appointment extends Model
         'problem',
         'date',
         'time',
+        'status'
     ];
 
     /**
@@ -29,5 +30,10 @@ class Appointment extends Model
     public function doctor()
     {
         return $this->belongsTo(User::class, 'doctorID');
+    }
+
+    public function support()
+    {
+        return $this->belongsTo(User::class, 'supportID');
     }
 }

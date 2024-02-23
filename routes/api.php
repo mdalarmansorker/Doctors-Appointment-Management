@@ -33,6 +33,8 @@ Route::put('/permissions/{permission}', [PermissionController::class, 'update'])
 Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy']);
 
 Route::post('/appointment', [AppointmentController::class, 'store']);
+Route::get('/appointment', [AppointmentController::class, 'show']);
+
 Route::get('/doctors', [AuthController::class, 'doctors']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
