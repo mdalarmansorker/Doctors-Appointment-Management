@@ -76,22 +76,38 @@
 
     <!-- Doctor list -->
     <h2 class="font-extrabold mt-4 text-2xl text-center">Doctor List</h2>
-    <a-table :columns="doctorColumns" :data-source="doctors">
-        <template #bodyCell="{ column, text }">
-            <template v-if="column.dataIndex === 'name'">
-                <a>{{ text }}</a>
-            </template>
-        </template>
-    </a-table>
+    <DoctorList />
     <!-- Appointment list -->
     <h2 class="font-extrabold mt-4 text-2xl text-center">Appointment List</h2>
-
+    <a-table :columns="appointmentColumns" :data-source="appointments">
+      <template #bodyCell="{ column, text, record, index }">
+        <template v-if="column.dataIndex !== 'no'">
+          <a>{{ text }}</a>
+        </template>
+        <template v-else>
+          {{ record.index }}
+        </template>
+      </template>
+    </a-table>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, reactive, createVNode } from 'vue';
+import DoctorList from '../DoctorList.vue';
 import axios from "axios";
-const doctorColumns = [
+const appointmentColumns = [
+    {
+        title: 'No',
+        dataIndex: 'no',
+        key: 'no',
+        slots: { customRender: 'no' },
+    },
+    {
+        title: 'Doctor',
+        dataIndex: ['doctor', 'name'],
+        key: "doctor_name",
+        render: doctorName => doctorName,
+    },
     {
         title: 'Name',
         dataIndex: 'name',
@@ -101,10 +117,51 @@ const doctorColumns = [
         title: 'Email',
         dataIndex: 'email',
         key: 'email',
-    }
+    },
+    {
+        title: 'Phone',
+        dataIndex: 'phone',
+        key: 'phone',
+    },
+    {
+        title: 'Gender',
+        dataIndex: 'gender',
+        key: 'gender',
+    },
+    {
+        title: 'Age',
+        dataIndex: 'age',
+        key: 'age',
+    },
+    {
+        title: 'Problem',
+        dataIndex: 'problem',
+        key: 'problem',
+    },
+    {
+        title: 'Date',
+        dataIndex: 'date',
+        key: 'date',
+    },
+    {
+        title: 'Time',
+        dataIndex: 'time',
+        key: 'time',
+    },
+    {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+    },
+    {
+        title: 'Support',
+        dataIndex: ['support', 'name'],
+        key: 'support_name',
+    },
 ];
 
 const doctors = ref([]);
+const appointments = ref([]);
 const userID = localStorage.getItem('UserID');
 export default defineComponent({
 setup() {
@@ -124,24 +181,23 @@ setup() {
         time: ''
     });
     const submitForm = async (evt) => {
-        console.log(form);
-            evt.preventDefault();
-            try {
-                const url = editMode.value ? `/api/appointment/${editAppointmentId.value}` : '/api/appointment';
-                const method = editMode.value ? 'put' : 'post';
-                const response = await axios[method](url, form);
-                console.log('Appointment created/updated:', response.data);
-               
-                visible.value = false; // Hide the modal after successful creation/update
-                 // Fetch updated data to refresh the table
-                editMode.value = false; // Reset edit mode
-                editAppointmentId.value = null; // Reset edit role ID
-            } catch (e) {
-                if (e.response.data && e.response.data.errors) {
-                    errors.value = Object.values(e.response.data.errors);
-                }
+        evt.preventDefault();
+        try {
+            const url = editMode.value ? `/api/appointment/${editAppointmentId.value}` : '/api/appointment';
+            const method = editMode.value ? 'put' : 'post';
+            const response = await axios[method](url, form);
+            console.log('Appointment created/updated:', response.data);
+            
+            visible.value = false; // Hide the modal after successful creation/update
+                // Fetch updated data to refresh the table
+            editMode.value = false; // Reset edit mode
+            editAppointmentId.value = null; // Reset edit role ID
+        } catch (e) {
+            if (e.response.data && e.response.data.errors) {
+                errors.value = Object.values(e.response.data.errors);
             }
-        };
+        }
+    };
     const showModal = () => {
     visible.value = true;
     };
@@ -160,21 +216,34 @@ setup() {
             console.error('Error fetchDoctor: ', error);
         }
     };
+    const fetchAppointment = async () => {
+        try {
+            const response = await axios.get('/api/appointment');
+            appointments.value = response.data.map((appointment, no) => ({ ...appointment, no: no + 1}));
+        } catch (error) {
+            console.error('Error fetchAppointment: ', error);
+        }
+    };
+    
     onMounted(() => {
         fetchDoctor();
+        fetchAppointment();
     });
     return {
     visible,
     showModal,
     handleOk,
     doctors,
-    doctorColumns,
     form,
     submitForm, 
     editMode,
-
+    appointmentColumns,
+    appointments,
     };
 },
+components: {
+    DoctorList, // Register the DoctorList component
+}
 });
 </script>
 
