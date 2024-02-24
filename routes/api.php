@@ -34,6 +34,8 @@ Route::delete('/permissions/{permission}', [PermissionController::class, 'destro
 
 Route::post('/appointment', [AppointmentController::class, 'store']);
 Route::get('/appointment', [AppointmentController::class, 'show']);
+Route::get('doctor-pending-appointments/{doctorID}', [AppointmentController::class, 'showPendingDoctorAppointments']);
+Route::get('/appointments/{doctorID}/{date}', [AppointmentController::class, 'showAppointmentList']);
 
 Route::get('/doctors', [AuthController::class, 'doctors']);
 Route::middleware('auth:sanctum')->group(function () {

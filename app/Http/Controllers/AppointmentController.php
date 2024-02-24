@@ -80,7 +80,25 @@ class AppointmentController extends Controller
         $appointments = Appointment::with(['doctor', 'support'])->get();
         return response()->json($appointments);
     }
-
+    public function showPendingDoctorAppointments($doctorID)
+    {
+        $appointments = Appointment::where('doctorID', $doctorID)
+                                    ->where('status', 'pending')
+                                    ->with(['doctor', 'support'])
+                                    ->orderByDesc('date')
+                                    ->orderByDesc('time')
+                                    ->get();
+        return response()->json($appointments);
+    }
+    public function showAppointmentList($doctorID, $date)
+    {
+        $appointments = Appointment::where('doctorID', $doctorID)
+                                    ->whereDate('date', $date)
+                                    ->orderByDesc('time')
+                                    ->with(['doctor', 'support'])
+                                    ->get();
+        return response()->json($appointments);
+    }
     /**
      * Show the form for editing the specified resource.
      */

@@ -12,15 +12,19 @@
         <template v-else-if="userRole === 'Support'">
             <SupportNav />
         </template>
+        <template v-else-if="userRole === 'Doctor'">
+            <DoctorNav />
+        </template>
     </div>
 </template>
-<script>
+<script lang="ts">
 import {ref, onMounted} from 'vue'
 import {useRouter} from "vue-router";
 import {request} from '../helper'
 import Loader from '../components/Loader.vue';
 import AdminNav from '../components/admin/AdminNav.vue';
 import SupportNav from '../components/support/SupportNav.vue';
+import DoctorNav from '../components/doctor/DoctorNav.vue';
 
 
 export default {
@@ -28,6 +32,7 @@ export default {
         Loader,
         AdminNav,
         SupportNav,
+        DoctorNav,
     },
     setup() {
         const user = ref()

@@ -187,7 +187,7 @@ setup() {
             const method = editMode.value ? 'put' : 'post';
             const response = await axios[method](url, form);
             console.log('Appointment created/updated:', response.data);
-            
+            fetchAppointment();
             visible.value = false; // Hide the modal after successful creation/update
                 // Fetch updated data to refresh the table
             editMode.value = false; // Reset edit mode
