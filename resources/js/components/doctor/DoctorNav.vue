@@ -1,6 +1,6 @@
 <template>
     <!-- Appointment list -->
-    <!-- <h2 class="font-extrabold mt-4 text-2xl text-center">Pending Appointment List</h2>
+    <h2 class="font-extrabold mt-4 text-2xl text-center">Pending Appointment List</h2>
     <a-table :columns="appointmentColumns" :data-source="pendingAppointments">
       <template #bodyCell="{ column, text, record, index }">
         <template v-if="column.dataIndex !== 'no'">
@@ -10,7 +10,7 @@
           {{ record.index }}
         </template>
       </template>
-    </a-table> -->
+    </a-table>
 
     <!-- Calendar -->
     <Calendar />
