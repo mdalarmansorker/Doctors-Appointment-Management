@@ -1,6 +1,6 @@
 <template>
     <!-- Appointment list -->
-    <h2 class="font-extrabold mt-4 text-2xl text-center">Pending Appointment List</h2>
+    <!-- <h2 class="font-extrabold mt-4 text-2xl text-center">Pending Appointment List</h2>
     <a-table :columns="appointmentColumns" :data-source="pendingAppointments">
       <template #bodyCell="{ column, text, record, index }">
         <template v-if="column.dataIndex !== 'no'">
@@ -10,7 +10,7 @@
           {{ record.index }}
         </template>
       </template>
-    </a-table>
+    </a-table> -->
 
     <!-- Calendar -->
     <Calendar />
@@ -97,7 +97,7 @@ setup() {
         try {
             const response = await axios.get(`/api/doctor-pending-appointments/${userID}`);
             pendingAppointments.value = response.data.map((appointment, no) => ({ ...appointment, no: no + 1}));
-            console.log(pendingAppointments);
+            // console.log(pendingAppointments);
         } catch (error) {
             console.error('Error fetchAppointment: ', error);
         }

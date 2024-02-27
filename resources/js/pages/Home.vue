@@ -63,7 +63,7 @@ export default {
             router.push('/')
         }
         // localStorage.setItem('Key', 1);
-        console.log(localStorage.getItem('Key'));
+        // console.log(localStorage.getItem('Key'));
         return {
             // Key,
             user,

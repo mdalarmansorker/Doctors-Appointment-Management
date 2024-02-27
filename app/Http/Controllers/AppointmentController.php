@@ -99,6 +99,22 @@ class AppointmentController extends Controller
                                     ->get();
         return response()->json($appointments);
     }
+    public function showMonthlyAppointmentList($doctorID, $month, $year)
+    {
+        $firstDayOfMonth = "{$year}-{$month}-01";
+        $lastDayOfMonth = date('Y-m-t', strtotime($firstDayOfMonth));
+
+        // Now you can use $firstDayFormatted and $lastDayFormatted in your query or wherever you need them
+        // Example query:
+        $appointments = Appointment::where('doctorID', $doctorID)
+                                   ->whereDate('date', '>=', $firstDayOfMonth)
+                                   ->whereDate('date', '<=', $lastDayOfMonth)
+                                   ->orderBy('date')
+                                   ->get();
+
+        return response()->json($appointments);
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
