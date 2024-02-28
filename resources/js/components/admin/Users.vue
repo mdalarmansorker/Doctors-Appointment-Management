@@ -39,38 +39,65 @@
             </form>
         </a-modal>
     </div>
-    <a-table :data-source="users">
-        <a-table-column title="#" width="50px">
-            <template #default="{ record, index }">
-                {{ index + 1 }}
-            </template>
-        </a-table-column>
-        <a-table-column key="name" title="Name" data-index="name" />
-        <a-table-column key="email" title="Email" data-index="email" />
-        <a-table-column key="roles" title="Roles" data-index="roles">
-            <template #default="{ record }">
-                <span v-for="role in record.roles" :key="role.id">{{ role.name }}</span>
-            </template>
-        </a-table-column> 
-        <a-table-column key="active" title="Active" data-index="active" >
-            <template #default="{ text, record, index }">
-                <a-button @click="handleInactive(record)" v-if="record.active">
-                    Active
-                </a-button>
-                <a-button @click="handleActive(record)" v-if="!record.active">
-                    Inactive
-                </a-button>
-            </template>
-        </a-table-column>       
-        <a-table-column key="action" title="Action">
-            <template #default="{ text, record, index }">
-                <span class="flex gap-2">
-                    <a-button @click="handleEdit(record)">Edit</a-button>
-                    <a-button danger @click="showDeleteConfirm(record)">Delete</a-button>
-                </span>
-            </template>
-        </a-table-column>
-    </a-table>
+    <h1 class="text-3xl font-bold text-center">Active Accounts</h1>
+
+    <div class="w-full flex justify-center flex-col">
+        <a-table :data-source="users" class="w-full">
+            <a-table-column title="#" width="">
+                <template #default="{ record, index }">
+                    {{ index + 1 }}
+                </template>
+            </a-table-column>
+            <a-table-column key="name" title="Name" data-index="name" />
+            <a-table-column key="email" title="Email" data-index="email" />
+            <a-table-column key="roles" title="Roles" data-index="roles">
+                <template #default="{ record }">
+                    <span v-for="role in record.roles" :key="role.id">{{ role.name }}</span>
+                </template>
+            </a-table-column> 
+            <a-table-column key="active" title="Active" data-index="active" >
+                <template #default="{ text, record, index }">
+                    <a-button @click="handleInactive(record)" v-if="record.active">
+                        Active
+                    </a-button>
+                    <a-button @click="handleActive(record)" v-if="!record.active">
+                        Inactive
+                    </a-button>
+                </template>
+            </a-table-column>       
+            <a-table-column key="action" title="Action">
+                <template #default="{ text, record, index }">
+                    <span class="flex gap-2">
+                        <a-button @click="handleEdit(record)">Edit</a-button>
+                        <a-button danger @click="showDeleteConfirm(record)">Delete</a-button>
+                    </span>
+                </template>
+            </a-table-column>
+        </a-table>
+        <h1 class="text-3xl font-bold text-center">Deleted Accounts</h1>
+        <a-table :data-source="deletedUsers" class="w-full">
+            <a-table-column title="#" width="">
+                <template #default="{ record, index }">
+                    {{ index + 1 }}
+                </template>
+            </a-table-column>
+            <a-table-column key="name" title="Name" data-index="name" />
+            <a-table-column key="email" title="Email" data-index="email" />
+            <a-table-column key="roles" title="Roles" data-index="roles">
+                <template #default="{ record }">
+                    <span v-for="role in record.roles" :key="role.id">{{ role.name }}</span>
+                </template>
+            </a-table-column>     
+            <a-table-column key="action" title="Action">
+                <template #default="{ text, record, index }">
+                    <span class="flex gap-2">
+                        <a-button @click="handleRestore(record)">Restore</a-button>
+                        <a-button danger @click="showDeleteConfirm(record)">Delete</a-button>
+                    </span>
+                </template>
+            </a-table-column>
+        </a-table>
+    </div>
 </template>
 
 <script lang="ts">
@@ -82,6 +109,7 @@ import axios from 'axios';
 export default defineComponent({
     setup() {
         const users = ref([]);
+        const deletedUsers = ref([]);
         const roles = ref([]);
         const visible = ref<boolean>(false);
         const errors = ref();
@@ -102,6 +130,15 @@ export default defineComponent({
                 console.error('Error getting users', error)
             }
         };
+        const fetchDeletedUser = async() => {
+            try{
+                const response = await axios.get('/api/deletedUsers');
+                deletedUsers.value = response.data;
+                console.log(deletedUsers);
+            } catch (error) {
+                console.error('Error getting deleted users', error);
+            }
+        }
         const fetchRole = async () => {
             try {
                 const response = await axios.get('/api/roles');
@@ -154,6 +191,33 @@ export default defineComponent({
                 },
             });
         }
+        const handleRestore = (record) => {
+            Modal.confirm({
+                title: 'Are you sure restoring this user?',
+                icon: createVNode(ExclamationCircleOutlined),
+                content: 'The user cannot log in if the account is inactive.',
+                okText: 'Yes',
+                okType: 'danger',
+                cancelText: 'No',
+                onOk() {
+                    console.log('OK');
+                    RestoreUser(record);
+                },
+                onCancel() {
+                    console.log('Cancel');
+                },
+            });
+        }
+        const RestoreUser = async (record) => {
+            try {
+                await axios.put(`/api/user/restore/${record.id}`);
+                fetchUser();
+                fetchDeletedUser();
+                console.log('User Restored');
+            } catch (error) {
+                console.error('Error restoring user');
+            }
+        }
         const updateActiveStatus = async (record) => {
             try {
                 await axios.put(`/api/users/${record.id}/${record.active}`);
@@ -166,6 +230,7 @@ export default defineComponent({
         onMounted(() => {
             fetchRole();
             fetchUser();
+            fetchDeletedUser();
         });
 
         const showModal = () => {
@@ -224,7 +289,8 @@ export default defineComponent({
         const handleDelete = async (record) => {
             try {
                 await axios.delete(`/api/users/${record.id}`);
-                fetchUser(); // Fetch updated data to refresh the table
+                fetchUser(); 
+                fetchDeletedUser();
                 console.log('User deleted successfully');
             } catch (error) {
                 console.error('Error deleting user:', error);
@@ -233,9 +299,11 @@ export default defineComponent({
 
         return {
             users,
+            deletedUsers,
             roles,
             handleEdit,
             handleDelete,
+            handleRestore,
             showDeleteConfirm,
             visible,
             showModal,

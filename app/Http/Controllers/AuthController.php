@@ -17,14 +17,20 @@ class AuthController extends Controller
 {
     public function index()
     {
-        // Fetch users with their roles
-        $users = User::whereHas('roles', function($query) {
-                        $query->where('name', '!=', 'admin');
-                    })
-                    ->with('roles:id,name')
-                    ->select('id', 'name', 'email', 'active')
-                    ->get();
-        
+        // Fetch users with their roles or without any roles
+        $users = User::whereDoesntHave('roles')
+        ->orWhereHas('roles', function($query) {
+            $query->where('name', '!=', 'admin');
+        })
+        ->with('roles:id,name')
+        ->select('id', 'name', 'email', 'active')
+        ->get();
+
+        return response()->json($users);
+    }
+    public function deletedUsers()
+    {
+        $users = User::onlyTrashed()->get();
         return response()->json($users);
     }
 
@@ -167,7 +173,41 @@ class AuthController extends Controller
         return response()->json(['message' => 'Successfully deleted', 'user' => $user], 200);
     }
 
+    public function restoreDeleteUser($userID)
+    {
+        // Find the user by ID
+        $user = User::withTrashed()->find($userID);
 
+        // Check if the user exists
+        if ($user) 
+        {
+            // Restore the user
+            $user->restore();
+            // Return a response indicating success
+            return response()->json(['message' => 'User restored successfully']);
+        } 
+        else 
+        {
+            // If the user does not exist, return a response with an error message
+            return response()->json(['error' => 'User not found'], 404);
+        }
+    }
+
+    public function permanentDelete($userID)
+    {
+        try {
+            // Find the user by ID
+            $user = User::findOrFail($userID);
+            // Perform permanent deletion
+            $user->forceDelete();
+            
+            // Return success response
+            return response()->json(['message' => 'User permanently deleted.']);
+        } catch (\Exception $e) {
+            // Return error response if user not found or other exception occurs
+            return response()->json(['error' => 'Failed to delete user.'], 500);
+        }
+}
     public function updateActiveStatus($userID, $active)
     {
         try {

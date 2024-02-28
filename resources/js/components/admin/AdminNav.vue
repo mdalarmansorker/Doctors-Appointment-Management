@@ -18,7 +18,7 @@
           <template #icon>
             <UsergroupAddOutlined />
           </template>
-          User Registration
+          Users
         </a-menu-item>
         <a-menu-item key="3">
           <template #icon>

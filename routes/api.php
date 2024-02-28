@@ -18,9 +18,12 @@ use App\Http\Controllers\AppointmentController;
 |
 */
 Route::get('/users', [AuthController::class, 'index']);
+Route::get('/deletedUsers', [AuthController::class, 'deletedUsers']);
 Route::put('/users/{userID}', [AuthController::class, 'update']);
 Route::put('/users/{userID}/{active}', [AuthController::class, 'updateActiveStatus']);
 Route::delete('/users/{userID}', [AuthController::class, 'destroy']);
+Route::delete('/users/permanentDelete/{userID}', [AuthController::class, 'permanentDelete']);
+Route::put('/user/restore/{userID}', [AuthController::class, 'restoreDeleteUser']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 // Route::get('/users/{userId}/roles-permissions', [RoleController::class, 'getUserRolesAndPermissions']);
