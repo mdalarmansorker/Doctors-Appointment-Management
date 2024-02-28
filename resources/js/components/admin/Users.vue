@@ -130,6 +130,7 @@ export default defineComponent({
                 cancelText: 'No',
                 onOk() {
                     console.log('OK');
+                    updateActiveStatus(record);
                 },
                 onCancel() {
                     console.log('Cancel');
@@ -146,12 +147,22 @@ export default defineComponent({
                 cancelText: 'No',
                 onOk() {
                     console.log('OK');
+                    updateActiveStatus(record);
                 },
                 onCancel() {
                     console.log('Cancel');
                 },
             });
         }
+        const updateActiveStatus = async (record) => {
+            try {
+                await axios.put(`/api/users/${record.id}/${record.active}`);
+                fetchUser(); // Fetch updated data to refresh the table
+                console.log('Active status updated');
+            } catch (error) {
+                console.error('Error updating active status user:', error);
+            }
+        };
         onMounted(() => {
             fetchRole();
             fetchUser();

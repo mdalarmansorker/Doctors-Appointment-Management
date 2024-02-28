@@ -50,7 +50,8 @@ class AuthController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
+                'active' => 1
             ], 201);
             $user->assignRole($request->role);
             return response()->json([
@@ -164,6 +165,23 @@ class AuthController extends Controller
         $user = User::find($userID);
         $user->delete();
         return response()->json(['message' => 'Successfully deleted', 'user' => $user], 200);
+    }
+
+
+    public function updateActiveStatus($userID, $active)
+    {
+        try {
+            $user = User::find($userID);
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+            $user->active = ($active)?0:1;
+            $user->save();
+
+            return response()->json(['message' => 'Successfully updated active status', 'user' => $user]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update active status', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function doctors()
