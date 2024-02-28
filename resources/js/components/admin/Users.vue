@@ -92,7 +92,7 @@
                 <template #default="{ text, record, index }">
                     <span class="flex gap-2">
                         <a-button @click="handleRestore(record)">Restore</a-button>
-                        <a-button danger @click="showDeleteConfirm(record)">Delete</a-button>
+                        <a-button danger @click="showPermanentDeleteConfirm(record)">Delete</a-button>
                     </span>
                 </template>
             </a-table-column>
@@ -218,6 +218,15 @@ export default defineComponent({
                 console.error('Error restoring user');
             }
         }
+        const PermanentDelete = async (record) => {
+            try {
+                await axios.delete(`/api/users/permanentDelete/${record.id}`);
+                fetchDeletedUser();
+                console.log('User permanently deleted');
+            } catch (error) {
+                console.log('Error deleting user');
+            }
+        }
         const updateActiveStatus = async (record) => {
             try {
                 await axios.put(`/api/users/${record.id}/${record.active}`);
@@ -285,6 +294,23 @@ export default defineComponent({
                 },
             });
         };
+        const showPermanentDeleteConfirm = (record) => {
+            Modal.confirm({
+                title: 'Are you sure delete this user permanently?',
+                icon: createVNode(ExclamationCircleOutlined),
+                content: 'This action cannot be undone!',
+                okText: 'Yes',
+                okType: 'danger',
+                cancelText: 'No',
+                onOk() {
+                    console.log('OK');
+                    PermanentDelete(record);
+                },
+                onCancel() {
+                    console.log('Cancel');
+                },
+            });
+        };
 
         const handleDelete = async (record) => {
             try {
@@ -305,6 +331,7 @@ export default defineComponent({
             handleDelete,
             handleRestore,
             showDeleteConfirm,
+            showPermanentDeleteConfirm,
             visible,
             showModal,
             handleOk,

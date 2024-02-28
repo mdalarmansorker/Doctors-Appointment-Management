@@ -197,7 +197,7 @@ class AuthController extends Controller
     {
         try {
             // Find the user by ID
-            $user = User::findOrFail($userID);
+            $user = User::withTrashed()->find($userID);
             // Perform permanent deletion
             $user->forceDelete();
             
