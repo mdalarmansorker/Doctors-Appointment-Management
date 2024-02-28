@@ -1,10 +1,16 @@
 <template>
     <div class="mx-auto w-4/12 mt-10 bg-blue-200 p-4 rounded-lg">
+        <!-- Loading UI -->
+        <div v-if="loading" class="flex justify-center p-36">
+            <!-- <Loader /> -->
+            <a-spin size="large" />
+
+        </div>
         <!-- component -->
-        <div
+        <div v-else
             class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-2 flex flex-col"
         >
-            <h1 class="text-gray-600 py-5 font-bold text-3xl"> Login </h1>
+            <h1 class="text-gray-600 py-5 font-bold text-3xl">DAM Login </h1>
             <ul class="list-disc text-red-400" v-for="(value, index) in errors" :key="index" v-if="typeof errors === 'object'">
                 <li>{{value[0]}}</li>
             </ul>
@@ -67,38 +73,43 @@
 import { reactive, ref } from 'vue';
 // import { Button } from 'ant-design-vue';
 import axios from 'axios';
+import Loader from '../components/Loader.vue';
 import {useRouter} from "vue-router";
 export default {
     setup() {
         const errors = ref()
         const router = useRouter();
+        const loading = ref(false);
         const form = reactive({
             email: '',
             password: '',
         })
         const handleLogin = async () => {
+            loading.value = true; // Set loading to true when login request starts
             try {
-                const result = await axios.post('/api/auth/login', form)
+                const result = await axios.post('/api/auth/login', form);
                 if (result.status === 200 && result.data && result.data.token) {
-                    localStorage.setItem('APP_DEMO_USER_TOKEN', result.data.token)
-                    // console.log(result.data.user)
-                    localStorage.setItem('UserName', result.data.user.name)
-                    localStorage.setItem("UserID", result.data.user.id)
-                    localStorage.setItem('UserEmail', result.data.user.email)
-                    localStorage.setItem('UserRole', result.data.roles)
-                    await router.push('home')
+                    localStorage.setItem('APP_DEMO_USER_TOKEN', result.data.token);
+                    localStorage.setItem('UserName', result.data.user.name);
+                    localStorage.setItem("UserID", result.data.user.id);
+                    localStorage.setItem('UserEmail', result.data.user.email);
+                    localStorage.setItem('UserRole', result.data.roles);
+                    await router.push('home');
                 }
             } catch (e) {
                 if(e && e.response.data && e.response.data.errors) {
-                    errors.value = Object.values(e.response.data.errors)
+                    errors.value = Object.values(e.response.data.errors);
                 } else {
-                    errors.value = e.response.data.message || ""
+                    errors.value = e.response.data.message || "";
                 }
+            } finally {
+                loading.value = false; // Set loading to false when login request ends
             }
         }
 
         return {
             form,
+            loading,
             errors,
             handleLogin,
         }

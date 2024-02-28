@@ -1,7 +1,7 @@
 <template>
     <div class="mx-auto lg:p-8">
         <div class="flex justify-between">
-            <h1 class="text-3xl font-extrabold"> Doctors Appointment Management </h1>
+            <h1 class="text-3xl font-extrabold"> DAM </h1>
             <span class="capitalize font-semibold">{{ userName }} <button
                 class="btn btn-error"
                 @click="handleLogout">Logout</button></span>

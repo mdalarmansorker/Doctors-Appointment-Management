@@ -51,7 +51,18 @@
             <template #default="{ record }">
                 <span v-for="role in record.roles" :key="role.id">{{ role.name }}</span>
             </template>
-        </a-table-column>        <a-table-column key="action" title="Action">
+        </a-table-column> 
+        <a-table-column key="active" title="Active" data-index="active" >
+            <template #default="{ text, record, index }">
+                <a-button @click="handleInactive(record)" v-if="record.active">
+                    Active
+                </a-button>
+                <a-button @click="handleActive(record)" v-if="!record.active">
+                    Inactive
+                </a-button>
+            </template>
+        </a-table-column>       
+        <a-table-column key="action" title="Action">
             <template #default="{ text, record, index }">
                 <span class="flex gap-2">
                     <a-button @click="handleEdit(record)">Edit</a-button>
@@ -86,7 +97,7 @@ export default defineComponent({
             try {
                 const response = await axios.get('/api/users');
                 users.value = response.data;
-                console.log(users);
+                // console.log(users);
             } catch (error) {
                 console.error('Error getting users', error)
             }
@@ -95,7 +106,7 @@ export default defineComponent({
             try {
                 const response = await axios.get('/api/roles');
                 roles.value = response.data;
-                console.log(roles);
+                // console.log(roles);
             } catch (error) {
                 console.error('Error fetching roles:', error);
             }
@@ -109,7 +120,38 @@ export default defineComponent({
             visible.value = true;
             editMode.value = true;
         };
-
+        const handleActive = (record) => {
+            Modal.confirm({
+                title: 'Are you sure active this user?',
+                icon: createVNode(ExclamationCircleOutlined),
+                content: 'The user can log in if the account is active.',
+                okText: 'Yes',
+                okType: 'danger',
+                cancelText: 'No',
+                onOk() {
+                    console.log('OK');
+                },
+                onCancel() {
+                    console.log('Cancel');
+                },
+            });
+        }
+        const handleInactive = (record) => {
+            Modal.confirm({
+                title: 'Are you sure inactive this user?',
+                icon: createVNode(ExclamationCircleOutlined),
+                content: 'The user cannot log in if the account is inactive.',
+                okText: 'Yes',
+                okType: 'danger',
+                cancelText: 'No',
+                onOk() {
+                    console.log('OK');
+                },
+                onCancel() {
+                    console.log('Cancel');
+                },
+            });
+        }
         onMounted(() => {
             fetchRole();
             fetchUser();
@@ -170,7 +212,7 @@ export default defineComponent({
 
         const handleDelete = async (record) => {
             try {
-                await axios.delete(`/api/user/${record.id}`);
+                await axios.delete(`/api/users/${record.id}`);
                 fetchUser(); // Fetch updated data to refresh the table
                 console.log('User deleted successfully');
             } catch (error) {
@@ -191,6 +233,8 @@ export default defineComponent({
             errors,
             submitForm,
             editMode,
+            handleActive,
+            handleInactive,
         };
     },
 });

@@ -19,6 +19,7 @@ use App\Http\Controllers\AppointmentController;
 */
 Route::get('/users', [AuthController::class, 'index']);
 Route::put('/users/{userID}', [AuthController::class, 'update']);
+Route::delete('/users/{userID}', [AuthController::class, 'destroy']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 // Route::get('/users/{userId}/roles-permissions', [RoleController::class, 'getUserRolesAndPermissions']);

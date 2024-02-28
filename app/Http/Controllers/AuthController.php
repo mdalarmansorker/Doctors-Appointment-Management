@@ -18,7 +18,12 @@ class AuthController extends Controller
     public function index()
     {
         // Fetch users with their roles
-        $users = User::with('roles:id,name')->select('id', 'name', 'email')->get();
+        $users = User::whereHas('roles', function($query) {
+                        $query->where('name', '!=', 'admin');
+                    })
+                    ->with('roles:id,name')
+                    ->select('id', 'name', 'email', 'active')
+                    ->get();
         
         return response()->json($users);
     }
@@ -152,6 +157,13 @@ class AuthController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function destroy($userID)
+    {
+        $user = User::find($userID);
+        $user->delete();
+        return response()->json(['message' => 'Successfully deleted', 'user' => $user], 200);
     }
 
     public function doctors()
