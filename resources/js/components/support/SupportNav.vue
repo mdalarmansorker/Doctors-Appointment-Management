@@ -109,6 +109,7 @@
                         id="date"
                         v-model="form.date"
                         type="date"
+                        :min="minDate"
                         placeholder="Date"
                         class="input input-bordered bg-slate-100 border-blue-500 text-black"
                         required
@@ -236,9 +237,19 @@
                     }}</a-tag>
                 </template>
                 <template v-else-if="column.dataIndex === 'action'">
-                    <span v-if="userID === record.support.id && record.status === 'pending'" class="flex gap-2">
-                        <a-button >Edit</a-button>
-                        <a-button danger @click="showAppointmentDeleteConfirm(record)">Delete</a-button>
+                    <span
+                        v-if="
+                            userID === record.support.id &&
+                            record.status === 'pending'
+                        "
+                        class="flex gap-2"
+                    >
+                        <a-button @click="handleEdit(record)">Edit</a-button>
+                        <a-button
+                            danger
+                            @click="showAppointmentDeleteConfirm(record)"
+                            >Delete</a-button
+                        >
                     </span>
                 </template>
                 <template v-else>
@@ -266,10 +277,10 @@ import {
     TagOutlined,
 } from "@ant-design/icons-vue";
 import type { MenuProps } from "ant-design-vue";
-import { Modal } from 'ant-design-vue';
+import { Modal } from "ant-design-vue";
 
 import DoctorList from "../DoctorList.vue";
-import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 
 import axios from "axios";
 const appointmentColumns = [
@@ -368,6 +379,15 @@ export default defineComponent({
             date: "",
             time: "",
         });
+        // Compute minimum date
+        const minDate = computed(() => {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, "0"); // January is 0!
+            const day = String(today.getDate()).padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+        });
         const submitForm = async (evt) => {
             evt.preventDefault();
             try {
@@ -390,6 +410,16 @@ export default defineComponent({
         };
         const showModal = () => {
             visible.value = true;
+            editMode.value = false;
+            form.doctorID = "";
+            form.name = "";
+            form.email = "";
+            form.phone = "";
+            form.gender = "";
+            form.age = "";
+            form.problem = "";
+            form.date = "";
+            form.time = "";
         };
 
         const handleOk = (e: MouseEvent) => {
@@ -428,19 +458,19 @@ export default defineComponent({
             Modal.confirm({
                 title: "Are you sure deleting this appointment?",
                 icon: createVNode(ExclamationCircleOutlined),
-                content: 'It cannot be undone!',
-                okText: 'Yes',
-                okType: 'danger',
-                cancelText: 'No',
-                onOk(){
-                    console.log('Ok');
+                content: "It cannot be undone!",
+                okText: "Yes",
+                okType: "danger",
+                cancelText: "No",
+                onOk() {
+                    console.log("Ok");
                     handleDeleteAppointment(record);
                 },
                 onCancel() {
-                    console.log('Cancel');
-                }
-            })
-        }
+                    console.log("Cancel");
+                },
+            });
+        };
         const handleDeleteAppointment = async (record) => {
             try {
                 await axios.delete(`/api/appointments/${record.id}`);
@@ -449,8 +479,22 @@ export default defineComponent({
             } catch (error) {
                 console.error("Error fetchAppointment: ", error);
             }
-        }
-        
+        };
+        const handleEdit = (record) => {
+            visible.value = true;
+            editMode.value = true;
+            editAppointmentId.value = record.id;
+            form.supportID = userID;
+            form.doctorID = record.doctorID;
+            form.name = record.name;
+            form.email = record.email;
+            form.phone = record.phone;
+            form.gender = record.gender;
+            form.age = record.age;
+            form.problem = record.problem;
+            form.date = record.date;
+            form.time = record.time;
+        };
         onMounted(() => {
             fetchDoctor();
             fetchSupport();
@@ -518,6 +562,8 @@ export default defineComponent({
             filteredAppointments,
             userID,
             showAppointmentDeleteConfirm,
+            handleEdit,
+            minDate,
         };
     },
     components: {

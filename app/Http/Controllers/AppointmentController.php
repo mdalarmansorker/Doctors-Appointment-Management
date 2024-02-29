@@ -51,30 +51,22 @@ class AppointmentController extends Controller
         // Return a success response with status code 201
         return response()->json(['message' => 'Appointment Created Successfully!'], 201);
     }
-    // public function store(Request $request)
-    // {
-    //     // Extract data from the request
-    //     $data = $request->all();
 
-    //     // Add additional fields to the data
-    //     $data['status'] = 'pending';
-
-    //     // // Create the appointment
-    //     $appointment = Appointment::create($data);
-
-    //     // Return a success response with status code 201
-    //     return response()->json(['message' => 'Appointment Created Successfully!', 'data' => $data], 201);
-    // }
-
-
-    /**
-     * Display the specified resource.
-     */
-    // public function show()
-    // {
-    //     $appointments = Appointment::all();
-    //     return response()->json($appointments);
-    // }
+    public function updateAppointment($appointmentID, Request $request)
+    {
+        $appointment = Appointment::find($appointmentID);
+        $appointment->name = $request->name;
+        $appointment->email = $request->email;
+        $appointment->doctorID = $request->doctorID;
+        $appointment->phone = $request->phone;
+        $appointment->gender = $request->gender;
+        $appointment->age = $request->age;
+        $appointment->problem = $request->problem;
+        $appointment->date = $request->date;
+        $appointment->time = $request->time;
+        $appointment->save();
+        return response()->json(['message' => 'Appointment updated successfully']);
+    }
     public function showAllAppointments()
     {
         $appointments = Appointment::with(['doctor', 'support'])->get();
