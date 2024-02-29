@@ -163,27 +163,6 @@
     <DoctorList />
     <!-- Appointment list -->
     <h2 class="font-extrabold mt-4 text-2xl text-center">Appointment List</h2>
-    <!-- <a-table :columns="appointmentColumns" :data-source="appointments">
-        <template #bodyCell="{ column, text, record, index }">
-            <template v-if="column.dataIndex === 'no'">
-                {{ record.index }}
-            </template>
-            <template v-else-if="column.dataIndex === 'status'">
-                <a-tag :color="getStatusColor(text)">{{
-                    formatStatus(text)
-                }}</a-tag>
-            </template>
-            <template v-else-if="column.dataIndex === 'action'">
-                <span class="flex gap-2">
-                    <a-button>Edit</a-button>
-                    <a-button danger>Delete</a-button>
-                </span>
-            </template>
-            <template v-else>
-                <a>{{ text }}</a>
-            </template>
-        </template>
-    </a-table> -->
     <div>
         <!-- Global search input -->
         <input
@@ -257,9 +236,9 @@
                     }}</a-tag>
                 </template>
                 <template v-else-if="column.dataIndex === 'action'">
-                    <span v-if="userID === record.support.id" class="flex gap-2">
-                        <a-button>Edit</a-button>
-                        <a-button danger>Delete</a-button>
+                    <span v-if="userID === record.support.id && record.status === 'pending'" class="flex gap-2">
+                        <a-button >Edit</a-button>
+                        <a-button danger @click="showAppointmentDeleteConfirm(record)">Delete</a-button>
                     </span>
                 </template>
                 <template v-else>
@@ -287,7 +266,11 @@ import {
     TagOutlined,
 } from "@ant-design/icons-vue";
 import type { MenuProps } from "ant-design-vue";
+import { Modal } from 'ant-design-vue';
+
 import DoctorList from "../DoctorList.vue";
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+
 import axios from "axios";
 const appointmentColumns = [
     {
@@ -432,7 +415,7 @@ export default defineComponent({
         };
         const fetchAppointment = async () => {
             try {
-                const response = await axios.get("/api/appointments/pending");
+                const response = await axios.get("/api/appointments");
                 appointments.value = response.data.map((appointment, no) => ({
                     ...appointment,
                     no: no + 1,
@@ -441,7 +424,33 @@ export default defineComponent({
                 console.error("Error fetchAppointment: ", error);
             }
         };
-
+        const showAppointmentDeleteConfirm = (record) => {
+            Modal.confirm({
+                title: "Are you sure deleting this appointment?",
+                icon: createVNode(ExclamationCircleOutlined),
+                content: 'It cannot be undone!',
+                okText: 'Yes',
+                okType: 'danger',
+                cancelText: 'No',
+                onOk(){
+                    console.log('Ok');
+                    handleDeleteAppointment(record);
+                },
+                onCancel() {
+                    console.log('Cancel');
+                }
+            })
+        }
+        const handleDeleteAppointment = async (record) => {
+            try {
+                await axios.delete(`/api/appointments/${record.id}`);
+                fetchAppointment();
+                console.log("Appointments deleted");
+            } catch (error) {
+                console.error("Error fetchAppointment: ", error);
+            }
+        }
+        
         onMounted(() => {
             fetchDoctor();
             fetchSupport();
@@ -508,6 +517,7 @@ export default defineComponent({
             supportFilter,
             filteredAppointments,
             userID,
+            showAppointmentDeleteConfirm,
         };
     },
     components: {
@@ -517,6 +527,7 @@ export default defineComponent({
         CalendarOutlined,
         UserOutlined,
         TagOutlined,
+        ExclamationCircleOutlined,
     },
     methods: {
         getStatusColor(status) {

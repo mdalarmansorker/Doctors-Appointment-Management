@@ -279,7 +279,7 @@ export default defineComponent({
 
         const showDeleteConfirm = (record) => {
             Modal.confirm({
-                title: 'Are you sure delete this user?',
+                title: 'Are you sure deleting this user?',
                 icon: createVNode(ExclamationCircleOutlined),
                 content: 'This action cannot be undone!',
                 okText: 'Yes',

@@ -155,8 +155,10 @@ class AppointmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Appointment $appointment)
+    public function destroy($appointmentID)
     {
-        //
+        $appointment = Appointment::find($appointmentID);
+        $appointment->delete();
+        return response()->json(['message' => 'Appointment Deleted'], 200);
     }
 }
