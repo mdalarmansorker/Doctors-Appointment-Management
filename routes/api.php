@@ -43,6 +43,7 @@ Route::get('doctor-pending-appointments/{doctorID}', [AppointmentController::cla
 Route::get('/appointments/{doctorID}/{date}', [AppointmentController::class, 'showAppointmentList']);
 Route::get('/appointments/{doctorID}/{month}/{year}', [AppointmentController::class, 'showMonthlyAppointmentList']);
 Route::get('/doctors', [AuthController::class, 'doctors']);
+Route::get('/supports', [AuthController::class, 'supports']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();

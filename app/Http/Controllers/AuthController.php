@@ -233,5 +233,14 @@ class AuthController extends Controller
 
         return $doctors;
     }
+    public function supports()
+    {
+        // Retrieve users with the 'Doctor' role
+        $doctors = User::select('id', 'name', 'email', 'active')->whereHas('roles', function ($query) {
+            $query->where('name', 'Support');
+        })->get();
+
+        return $doctors;
+    }
 
 }

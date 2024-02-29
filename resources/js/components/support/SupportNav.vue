@@ -131,7 +131,11 @@
                     <label class="label">
                         <span class="label-text text-black">Select Doctor</span>
                     </label>
-                    <select v-model="form.doctorID" required class="p-4 rounded-md">
+                    <select
+                        v-model="form.doctorID"
+                        required
+                        class="p-4 rounded-md"
+                    >
                         <option value="" disabled>Select Doctor</option>
                         <option
                             v-for="doctor in doctors"
@@ -143,7 +147,10 @@
                     </select>
                 </div>
                 <div class="form-control mt-6">
-                    <button type="submit" class="btn btn-primary text-blue-600 hover:text-white">
+                    <button
+                        type="submit"
+                        class="btn btn-primary text-blue-600 hover:text-white"
+                    >
                         {{ editMode ? "Update" : "Create" }}
                     </button>
                 </div>
@@ -156,7 +163,7 @@
     <DoctorList />
     <!-- Appointment list -->
     <h2 class="font-extrabold mt-4 text-2xl text-center">Appointment List</h2>
-    <a-table :columns="appointmentColumns" :data-source="appointments">
+    <!-- <a-table :columns="appointmentColumns" :data-source="appointments">
         <template #bodyCell="{ column, text, record, index }">
             <template v-if="column.dataIndex === 'no'">
                 {{ record.index }}
@@ -176,11 +183,102 @@
                 <a>{{ text }}</a>
             </template>
         </template>
-    </a-table>
+    </a-table> -->
+    <div>
+        <!-- Global search input -->
+        <input
+            v-model="searchText"
+            type="text"
+            placeholder="Search..."
+            class="p-2 border rounded-md mb-4"
+        />
+
+        <!-- Column-wise filters -->
+        <div class="flex mb-4">
+            <div class="mr-4">
+                <label class="font-bold">Filter by Gender:</label>
+                <select v-model="genderFilter" class="p-2 border rounded-md">
+                    <option value="">All</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+            <div class="mr-4">
+                <label class="font-bold">Filter by Age:</label>
+                <input
+                    v-model.number="ageFilter"
+                    type="number"
+                    min="1"
+                    class="p-2 border rounded-md"
+                />
+            </div>
+            <div class="mr-4">
+                <label class="font-bold">Filter by Doctor:</label>
+                <select v-model="doctorFilter" class="p-2 border rounded-md">
+                    <option value="">All</option>
+                    <option
+                        v-for="doctor in doctors"
+                        :key="doctor.id"
+                        :value="doctor.id"
+                    >
+                        {{ doctor.name }}
+                    </option>
+                </select>
+            </div>
+            <div>
+                <label class="font-bold">Filter by Support:</label>
+                <select v-model="supportFilter" class="p-2 border rounded-md">
+                    <option value="">All</option>
+                    <option
+                        v-for="support in supports"
+                        :key="support.id"
+                        :value="support.id"
+                    >
+                        {{ support.name }}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Appointments table -->
+        <a-table
+            :columns="appointmentColumns"
+            :data-source="filteredAppointments"
+        >
+            <!-- Table body -->
+            <template #bodyCell="{ column, text, record, index }">
+                <!-- Handle custom rendering for different columns -->
+                <template v-if="column.dataIndex === 'no'">
+                    {{ record.index }}
+                </template>
+                <template v-else-if="column.dataIndex === 'status'">
+                    <a-tag :color="getStatusColor(text)">{{
+                        formatStatus(text)
+                    }}</a-tag>
+                </template>
+                <template v-else-if="column.dataIndex === 'action'">
+                    <span v-if="userID === record.support.id" class="flex gap-2">
+                        <a-button>Edit</a-button>
+                        <a-button danger>Delete</a-button>
+                    </span>
+                </template>
+                <template v-else>
+                    <a>{{ text }}</a>
+                </template>
+            </template>
+        </a-table>
+    </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, reactive, createVNode } from "vue";
+import {
+    defineComponent,
+    ref,
+    onMounted,
+    reactive,
+    createVNode,
+    computed,
+} from "vue";
 import {
     HomeOutlined,
     UsergroupAddOutlined,
@@ -262,8 +360,14 @@ const appointmentColumns = [
 ];
 
 const doctors = ref([]);
+const supports = ref([]);
 const appointments = ref([]);
-const userID = localStorage.getItem("UserID");
+const searchText = ref("");
+const genderFilter = ref("");
+const ageFilter = ref(null);
+const doctorFilter = ref("");
+const supportFilter = ref("");
+const userID = parseInt(localStorage.getItem("UserID"));
 export default defineComponent({
     setup() {
         const visible = ref<boolean>(false);
@@ -318,6 +422,14 @@ export default defineComponent({
                 console.error("Error fetchDoctor: ", error);
             }
         };
+        const fetchSupport = async () => {
+            try {
+                const response = await axios.get("/api/supports");
+                supports.value = response.data;
+            } catch (error) {
+                console.error("Error fetchSupport: ", error);
+            }
+        };
         const fetchAppointment = async () => {
             try {
                 const response = await axios.get("/api/appointments/pending");
@@ -332,18 +444,70 @@ export default defineComponent({
 
         onMounted(() => {
             fetchDoctor();
+            fetchSupport();
             fetchAppointment();
+        });
+        // Computed property to filter appointments based on global search text, gender, age, doctor, and support
+        const filteredAppointments = computed(() => {
+            return appointments.value.filter((appointment) => {
+                // Check global search text
+                if (searchText.value.trim()) {
+                    const search = searchText.value.toLowerCase();
+                    const matchSearchText = Object.values(appointment).some(
+                        (value) => String(value).toLowerCase().includes(search)
+                    );
+                    if (!matchSearchText) return false;
+                }
+
+                // Check gender filter
+                if (
+                    genderFilter.value &&
+                    appointment.gender !== genderFilter.value
+                )
+                    return false;
+
+                // Check age filter
+                // Check age filter
+                if (ageFilter.value !== null && ageFilter.value !== "") {
+                    if (appointment.age !== parseInt(ageFilter.value))
+                        return false;
+                }
+
+                // Check doctor filter
+                if (
+                    doctorFilter.value &&
+                    appointment.doctor.id !== doctorFilter.value
+                )
+                    return false;
+
+                // Check support filter
+                if (
+                    supportFilter.value &&
+                    appointment.support.id !== supportFilter.value
+                )
+                    return false;
+
+                return true; // Include the appointment if it passes all filters
+            });
         });
         return {
             visible,
             showModal,
             handleOk,
             doctors,
+            supports,
             form,
             submitForm,
             editMode,
             appointmentColumns,
             appointments,
+            searchText,
+            genderFilter,
+            ageFilter,
+            doctorFilter,
+            supportFilter,
+            filteredAppointments,
+            userID,
         };
     },
     components: {
