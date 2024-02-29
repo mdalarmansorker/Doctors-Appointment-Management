@@ -60,6 +60,10 @@ export default {
         const handleLogout = () => {
             localStorage.removeItem('APP_DEMO_USER_TOKEN')
             localStorage.removeItem('User')
+            localStorage.removeItem('UserID')
+            localStorage.removeItem('UserName')
+            localStorage.removeItem('UserEmail')
+            localStorage.removeItem('UserRole')
             router.push('/')
         }
         // localStorage.setItem('Key', 1);

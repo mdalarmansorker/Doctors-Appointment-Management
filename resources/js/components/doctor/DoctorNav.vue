@@ -1,124 +1,84 @@
 <template>
-    <!-- Appointment list -->
-    <h2 class="font-extrabold mt-4 text-2xl text-center">Pending Appointment List</h2>
-    <a-table :columns="appointmentColumns" :data-source="pendingAppointments">
-      <template #bodyCell="{ column, text, record, index }">
-        <template v-if="column.dataIndex !== 'no'">
-          <a>{{ text }}</a>
+
+    <a-menu
+      v-model:openKeys="openKeys"
+      v-model:selectedKeys="selectedKeys"
+      mode="horizontal"
+      @click="handleClick"
+    >
+      <a-menu-item key="1">
+        <template #icon>
+          <HomeOutlined />
         </template>
-        <template v-else>
-          {{ record.index }}
+        Appointments
+      </a-menu-item>
+      <a-menu-item key="2">
+        <template #icon>
+          <CalendarOutlined />
         </template>
-      </template>
-    </a-table>
-
-    <!-- Calendar -->
-    <Calendar />
-</template>
-
-<script lang="ts">
-import { defineComponent, ref, onMounted, reactive, createVNode } from 'vue';
-import Calendar from './Calendar.vue';
-import axios from "axios";
-const appointmentColumns = [
-    {
-        title: 'No',
-        dataIndex: 'no',
-        key: 'no',
-        slots: { customRender: 'no' },
+        Calendar
+      </a-menu-item>
+    </a-menu>
+  <div class="items-center">
+    <template v-if="selectedTemplate === 'Appointments'">
+      <Appointments />
+    </template>
+    <template v-else>
+      <Calendar />
+    </template>
+  </div>
+  
+  </template>
+  
+  <script lang="ts">
+  import { defineComponent, reactive, ref } from 'vue';
+  import {
+    HomeOutlined,
+    UsergroupAddOutlined,
+    CalendarOutlined,
+    UserOutlined,
+    TagOutlined,
+  } from '@ant-design/icons-vue';
+  import type { MenuProps } from 'ant-design-vue';
+  import Calendar from './Calendar.vue';
+  import Appointments from './Appointments.vue';
+  
+  export default defineComponent({
+    components: {
+      HomeOutlined,
+      UsergroupAddOutlined,
+      CalendarOutlined,
+      UserOutlined,
+      TagOutlined,
+      Calendar, 
+      Appointments,
     },
-    {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Email',
-        dataIndex: 'email',
-        key: 'email',
-    },
-    {
-        title: 'Phone',
-        dataIndex: 'phone',
-        key: 'phone',
-    },
-    {
-        title: 'Gender',
-        dataIndex: 'gender',
-        key: 'gender',
-    },
-    {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
-    },
-    {
-        title: 'Problem',
-        dataIndex: 'problem',
-        key: 'problem',
-    },
-    {
-        title: 'Date',
-        dataIndex: 'date',
-        key: 'date',
-    },
-    {
-        title: 'Time',
-        dataIndex: 'time',
-        key: 'time',
-    },
-    {
-        title: 'Support',
-        dataIndex: ['support', 'name'],
-        key: 'support_name',
-    },
-];
-
-const doctors = ref([]);
-const pendingAppointments = ref([]);
-const userID = localStorage.getItem('UserID');
-export default defineComponent({
-setup() {
-    const visible = ref<boolean>(false);
-    const editMode = ref<boolean>(false);
-    const editAppointmentId = ref<number | null>(null); 
-    
-    
-    const showModal = () => {
-    visible.value = true;
-    };
-
-    const handleOk = (e: MouseEvent) => {
-    console.log(e);
-    visible.value = false;
-    };
-
-    const fetchPendingAppointment = async () => {
-        try {
-            const response = await axios.get(`/api/doctor-pending-appointments/${userID}`);
-            pendingAppointments.value = response.data.map((appointment, no) => ({ ...appointment, no: no + 1}));
-            // console.log(pendingAppointments);
-        } catch (error) {
-            console.error('Error fetchAppointment: ', error);
+    setup() {
+      const state = reactive({
+        selectedKey: null,
+        openKeys: [],
+      });
+      const selectedTemplate = ref('Home'); // Default template to show
+  
+      const handleClick: MenuProps['onClick'] = menuInfo => {
+        switch (menuInfo.key) {
+          case '1':
+            selectedTemplate.value = 'Appointments';
+            break;
+          case '2':
+            selectedTemplate.value = 'Calendar';
+            break;
+          default:
+            selectedTemplate.value = 'Appointments';
         }
-    };
-    
-    onMounted(() => {
-        fetchPendingAppointment();
-    });
-    return {
-    visible,
-    showModal,
-    handleOk,
-    doctors,
-    editMode,
-    appointmentColumns,
-    pendingAppointments,
-    };
-},
-components: {
-    Calendar,
-}
-});
-</script>
-
+      };
+  
+      return {
+        selectedTemplate,
+        state,
+        handleClick,
+      };
+    },
+  });
+  </script>
+  
