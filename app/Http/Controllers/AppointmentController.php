@@ -75,10 +75,31 @@ class AppointmentController extends Controller
     //     $appointments = Appointment::all();
     //     return response()->json($appointments);
     // }
-    public function show()
+    public function showAllAppointments()
     {
         $appointments = Appointment::with(['doctor', 'support'])->get();
         return response()->json($appointments);
+    }
+    public function showPendingAppointments()
+    {
+        $appointment = Appointment::with(['doctor', 'support'])
+                                    ->where('status', 'pending')
+                                    ->get();
+        return response()->json($appointment);
+    }
+    public function showAcceptedAppointments()
+    {
+        $appointment = Appointment::with(['doctor', 'support'])
+                                    ->where('status', 'accepted')
+                                    ->get();
+        return response()->json($appointment);
+    }
+    public function showRejectedAppointments()
+    {
+        $appointment = Appointment::with(['doctor', 'support'])
+                                    ->where('status', 'rejected')
+                                    ->get();
+        return response()->json($appointment);
     }
     public function showPendingDoctorAppointments($doctorID)
     {

@@ -320,7 +320,7 @@ export default defineComponent({
         };
         const fetchAppointment = async () => {
             try {
-                const response = await axios.get("/api/appointment");
+                const response = await axios.get("/api/appointments/pending");
                 appointments.value = response.data.map((appointment, no) => ({
                     ...appointment,
                     no: no + 1,

@@ -1,11 +1,16 @@
 <template>
     <a-table :columns="doctorColumns" :data-source="doctors">
         <template #bodyCell="{ column, text, record, index }">
-            <template v-if="column.dataIndex !== 'index'">
-                <a>{{ text }}</a>
+            <template v-if="column.dataIndex === 'index'">
+                {{ record.index }}
+            </template>
+            <template v-else-if="column.dataIndex === 'active'">
+              <a-tag>
+                {{ formatActiveStatus(text) }}
+              </a-tag>
             </template>
             <template v-else>
-                {{ record.index }}
+              <a>{{ text }}</a>
             </template>
         </template>
     </a-table>
@@ -32,6 +37,11 @@ const doctorColumns = [
         dataIndex: "email",
         key: "email",
     },
+    {
+        title: "Active",
+        dataIndex: "active",
+        key: "active",
+    }
 ];
 
 const doctors = ref([]);
@@ -59,5 +69,11 @@ export default defineComponent({
             doctorColumns,
         };
     },
+    methods:{
+      formatActiveStatus(text) {
+        return (text)?"Active":"Inactive";
+      }
+      
+    }
 });
 </script>

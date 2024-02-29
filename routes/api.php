@@ -38,7 +38,7 @@ Route::put('/permissions/{permission}', [PermissionController::class, 'update'])
 Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy']);
 
 Route::post('/appointment', [AppointmentController::class, 'store']);
-Route::get('/appointment', [AppointmentController::class, 'show']);
+Route::get('/appointments/pending', [AppointmentController::class, 'showPendingAppointments']);
 Route::get('doctor-pending-appointments/{doctorID}', [AppointmentController::class, 'showPendingDoctorAppointments']);
 Route::get('/appointments/{doctorID}/{date}', [AppointmentController::class, 'showAppointmentList']);
 Route::get('/appointments/{doctorID}/{month}/{year}', [AppointmentController::class, 'showMonthlyAppointmentList']);
