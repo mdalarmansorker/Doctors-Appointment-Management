@@ -14,3 +14,7 @@ Upgrade the .env file with database name, username and password then run this.
 ```
 php artisan migrate
 ```
+After creating the migration we need to run the seeder to create an admin user
+```
+php artisan migrate:fresh --seed
+```
