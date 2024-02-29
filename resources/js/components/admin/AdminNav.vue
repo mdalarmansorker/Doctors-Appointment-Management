@@ -1,55 +1,51 @@
 <template>
-  <div class="flex gap-8">
-    <div>
-      <a-menu
-        v-model:openKeys="openKeys"
-        v-model:selectedKeys="selectedKeys"
-        style="width: 256px"
-        mode="vertical"
-        @click="handleClick"
-      >
-        <a-menu-item key="1">
-          <template #icon>
-            <HomeOutlined />
-          </template>
-          Home
-        </a-menu-item>
-        <a-menu-item key="2">
-          <template #icon>
-            <UsergroupAddOutlined />
-          </template>
-          Users
-        </a-menu-item>
-        <a-menu-item key="3">
-          <template #icon>
-            <UserOutlined />
-          </template>
-          Roles
-        </a-menu-item>
-        <a-menu-item key="4">
-          <template #icon>
-            <TagOutlined />
-          </template>
-          Permissions
-        </a-menu-item>
-      </a-menu>
-    </div>
-    <div class="items-center">
-      <template v-if="selectedTemplate === 'Home'">
-        <!-- <AdminHome /> -->
-        <RolesTesting />
+
+  <a-menu
+    v-model:openKeys="openKeys"
+    v-model:selectedKeys="selectedKeys"
+    mode="horizontal"
+    @click="handleClick"
+  >
+    <a-menu-item key="1">
+      <template #icon>
+        <HomeOutlined />
       </template>
-      <template v-else-if="selectedTemplate === 'User Registration'">
-        <Users />
+      Home
+    </a-menu-item>
+    <a-menu-item key="2">
+      <template #icon>
+        <UsergroupAddOutlined />
       </template>
-      <template v-else-if="selectedTemplate === 'Create Roles'">
-        <Roles />
+      Users
+    </a-menu-item>
+    <a-menu-item key="3">
+      <template #icon>
+        <UserOutlined />
       </template>
-      <template v-else-if="selectedTemplate === 'Create Permissions'">
-        <Permissions />
+      Roles
+    </a-menu-item>
+    <a-menu-item key="4">
+      <template #icon>
+        <TagOutlined />
       </template>
-    </div>
-  </div>
+      Permissions
+    </a-menu-item>
+  </a-menu>
+<div class="items-center">
+  <template v-if="selectedTemplate === 'Home'">
+    <AdminHome />
+  </template>
+  <template v-else-if="selectedTemplate === 'User Registration'">
+    <Users />
+  </template>
+  <template v-else-if="selectedTemplate === 'Create Roles'">
+    <Roles />
+  </template>
+  <template v-else-if="selectedTemplate === 'Create Permissions'">
+    <Permissions />
+  </template>
+</div>
+
 </template>
 
 <script lang="ts">
@@ -66,7 +62,6 @@ import AdminHome from './AdminHome.vue';
 import Users from './Users.vue';
 import Roles from './Roles.vue';
 import Permissions from './Permissions.vue';
-import RolesTesting from './RolesTesting.vue';
 
 export default defineComponent({
   components: {
@@ -79,7 +74,6 @@ export default defineComponent({
     Users,
     Roles,
     Permissions,
-    RolesTesting,
   },
   setup() {
     const state = reactive({

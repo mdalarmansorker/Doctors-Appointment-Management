@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a-button @click="showModal">Create User</a-button>
+        <a-button @click="showModal" class="mt-4">Create User</a-button>
         <a-modal v-model:visible="visible" title="Create User" @ok="handleOk" :ok-button-props="{ type: 'default' }">
             <form method="post" @submit="submitForm">
                 <div class="form-control">

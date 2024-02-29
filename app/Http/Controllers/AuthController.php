@@ -207,7 +207,7 @@ class AuthController extends Controller
             // Return error response if user not found or other exception occurs
             return response()->json(['error' => 'Failed to delete user.'], 500);
         }
-}
+    }
     public function updateActiveStatus($userID, $active)
     {
         try {
