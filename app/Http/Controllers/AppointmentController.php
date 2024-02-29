@@ -103,6 +103,16 @@ class AppointmentController extends Controller
                                     ->get();
         return response()->json($appointments);
     }
+    public function showAcceptedDoctorAppointments($doctorID)
+    {
+        $appointments = Appointment::where('doctorID', $doctorID)
+                                    ->where('status', 'accepted')
+                                    ->with(['doctor', 'support'])
+                                    ->orderByDesc('date')
+                                    ->orderByDesc('time')
+                                    ->get();
+        return response()->json($appointments);
+    }
     public function showAppointmentList($doctorID, $date)
     {
         $appointments = Appointment::where('doctorID', $doctorID)
@@ -120,6 +130,7 @@ class AppointmentController extends Controller
         // Now you can use $firstDayFormatted and $lastDayFormatted in your query or wherever you need them
         // Example query:
         $appointments = Appointment::where('doctorID', $doctorID)
+                                   ->where('status', 'accepted')
                                    ->whereDate('date', '>=', $firstDayOfMonth)
                                    ->whereDate('date', '<=', $lastDayOfMonth)
                                    ->orderBy('date')
@@ -128,6 +139,13 @@ class AppointmentController extends Controller
         return response()->json($appointments);
     }
     
+    public function updateAppointmentStatus($appointmentID, $status)
+    {
+        $appointment = Appointment::find($appointmentID);
+        $appointment->status = $status;
+        $appointment->save();
+        return response->json(["message" => "Appointment "+ $status]);
+    }
 
     /**
      * Remove the specified resource from storage.
