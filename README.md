@@ -1,7 +1,8 @@
 # Doctors Appointment Management
 
 ### Packages used for this project
-
+- Ant Design Vue
+- Axios (for making HTTP requests)
 
 ### Installation Command
 ```
@@ -18,3 +19,4 @@ After creating the migration we need to run the seeder to create an admin user
 ```
 php artisan migrate:fresh --seed
 ```
+
